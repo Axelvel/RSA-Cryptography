@@ -25,6 +25,7 @@ def home_ext_euclide(y,b): #algorithme d'euclide étendu pour la recherche de l'
 
     return nouvt % y
 
+
 def home_pgcd(a,b): #recherche du pgcd
     if(b==0): 
         return a 
@@ -58,15 +59,21 @@ def mot10char(): #entrer le secret
     
 
 #voici les éléments de la clé d'Alice
-x1a=2010942103422233250095259520183 #p
-x2a=3503815992030544427564583819137 #q
+#x1a=2010942103422233250095259520183 #p
+#x2a=3503815992030544427564583819137 #q
+
+x1a=46729851468429981450596683934659799417296757155707833262801920174014214271791880250080149828203777515317 #p1 for sha256 (104 digits keys)
+x2a=78576609692768067820821754278289758196321966686126130368838717805087052908022138028011573028777628837617 #q1 for sha256
 na=x1a*x2a  #n
 phia=((x1a-1)*(x2a-1))//home_pgcd(x1a-1,x2a-1)
 ea=17 #exposant public
 da=home_ext_euclide(phia,ea) #exposant privé
 #voici les éléments de la clé de bob
-x1b=9434659759111223227678316435911 #p
-x2b=8842546075387759637728590482297 #q
+#x1b=9434659759111223227678316435911 #p
+#x2b=8842546075387759637728590482297 #q
+x1b=44974862217905051299604905779732073696318755181134355304715504703900165445769065766434794585211944116773 #p2 for sha256
+x2b=27036107090286352347612559531240494672462139123470458244545933143045120802035142478857262597331090531877 #q2 for sha256
+
 nb=x1b*x2b # n
 phib=((x1b-1)*(x2b-1))//home_pgcd(x1b-1,x2b-1)
 eb=23 # exposants public
@@ -98,7 +105,9 @@ chif=home_mod_expnoent(num_sec, ea, na)
 print(chif)
 print("*******************************************************************")
 print("On utilise la fonction de hashage MD5 pour obtenir le hash du message",secret)
-Bhachis0=hashlib.md5(secret.encode(encoding='UTF-8',errors='strict')).digest() #MD5 du message
+#Bhachis0=hashlib.md5(secret.encode(encoding='UTF-8',errors='strict')).digest() #MD5 du message #TODO: Implement sha256
+Bhachis0=hashlib.sha256(secret.encode(encoding='UTF-8',errors='strict')).digest() #256 du message
+
 print("voici le hash en nombre décimal ")
 Bhachis1=binascii.b2a_uu(Bhachis0)
 Bhachis2=Bhachis1.decode() #en string
@@ -120,7 +129,10 @@ print("Alice déchiffre la signature de Bob \n",signe,"\n ce qui donne  en déci
 designe=home_mod_expnoent(signe, eb, nb)
 print(designe)
 print("Alice vérifie si elle obtient la même chose avec le hash de ",dechif)
-Ahachis0=hashlib.md5(dechif.encode(encoding='UTF-8',errors='strict')).digest()
+#Ahachis0=hashlib.md5(dechif.encode(encoding='UTF-8',errors='strict')).digest() #TODO: Implement sha256
+Ahachis0=hashlib.sha256(dechif.encode(encoding='UTF-8',errors='strict')).digest()
+
+
 Ahachis1=binascii.b2a_uu(Ahachis0)
 Ahachis2=Ahachis1.decode()
 Ahachis3=home_string_to_int(Ahachis2)
