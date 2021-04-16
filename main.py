@@ -3,23 +3,6 @@
 import hashlib
 import binascii
 
-def modinv(a: int, b: int) -> int:
-
-    """return x such that (x * a) % b == 1"""
-    g, x, _ = egcd(a, b)
-    if g != 1:
-        raise Exception('gcd(a, b) != 1')
-    return x % b
-
-def egcd(a, b):
-    if a == 0:
-        return b, 0, 1
-    else:
-        gcd, x, y = egcd(b % a, a)
-        return gcd, y - (b // a) * x, x
-
-
-
 def home_mod_expnoent(x,y,n): #exponentiation modulaire
 
     result = 1
@@ -34,40 +17,13 @@ def home_mod_expnoent(x,y,n): #exponentiation modulaire
 
 
 def home_ext_euclide(y,b): #algorithme d'euclide étendu pour la recherche de l'exposant secret
+    (r, nouvr, t, nouvt) = (y, b, 0, 1)
 
-    r = b
-    new_r = y
+    while (nouvr > 1) :
+        q = (r // nouvr)
+        (r, nouvr, t, nouvt) = (nouvr, r % nouvr, nouvt, t-(q*nouvt))
 
-    #r = y
-    #new_r = b
-
-    # Coefficient de Bezout v
-    v = 0
-    new_v = 1
-
-    while new_r != 0:
-        print("r = ", r)
-        print("new_r = ", new_r)
-        q = r // new_r
-        print ("q = ", q)
-        #reste = r - new_r * q
-        #r = new_r * q + reste
-
-        var_a = new_r
-        new_r = r - new_r * q
-        r = var_a
-        
-        var_b = new_v
-        new_v = v - new_v * q
-        v = var_b
-
-    if r > 1:
-        print ("b n'est pas inversible mod y")
-    if v < 0:
-        v = v + b
-    print("v = ", v)
-    return v
-
+    return nouvt % y
 
 def home_pgcd(a,b): #recherche du pgcd
     if(b==0): 
@@ -115,21 +71,6 @@ nb=x1b*x2b # n
 phib=((x1b-1)*(x2b-1))//home_pgcd(x1b-1,x2b-1)
 eb=23 # exposants public
 db=home_ext_euclide(phib,eb) #exposant privé
-
-
-
-print("test : ")
-print("ftc = ", home_mod_expnoent(25,15,17))
-print("pow = ", pow(25,15,17))
-
-print("Modular inverse : ", home_ext_euclide(23, 26))
-
-
-print(modinv(26,23))
-
-#print (egcd(23,26))
-
-
 
 
 
