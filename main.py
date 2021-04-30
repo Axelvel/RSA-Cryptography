@@ -3,7 +3,23 @@
 import hashlib
 import binascii
 
-def home_mod_expnoent(x,y,n): #exponentiation modulaire
+def mod_exp_crt(p, q, d, c):  #Modular exponentiation using CRT Algorithm (decrypting encrypyed message)
+
+    if (q > p): p,q = q,p #q < p
+    n = p*q
+    q_inv = home_ext_euclide(p, q) ##inverse modulaire de q mod p
+    dq = d % (q-1)
+    dp = d % (p-1)
+
+    mq = home_mod_expnoent(c, dq, q)
+    mp = home_mod_expnoent(c, dp, p)
+
+    h = ( (mp - mq) * q_inv ) % p
+    m = (mq + h * q) % n
+
+    return m
+
+def home_mod_expnoent(x,y,n): #Exponentiation modulaire
 
     result = 1
 
@@ -131,7 +147,8 @@ print("*******************************************************************")
 x=input("appuyer sur entrer")
 print("*******************************************************************")
 print("Alice déchiffre le message chiffré \n",chif,"\nce qui donne ")
-dechif=home_int_to_string(home_mod_expnoent(chif, da, na))
+#dechif=home_int_to_string(home_mod_expnoent(chif, da, na))
+dechif = home_int_to_string( mod_exp_crt(x1a, x2a, da, chif))
 print(dechif)
 print("*******************************************************************")
 print("Alice déchiffre la signature de Bob \n",signe,"\n ce qui donne  en décimal")
